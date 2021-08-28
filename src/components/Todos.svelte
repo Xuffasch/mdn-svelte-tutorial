@@ -1,10 +1,5 @@
 <script>
-  let todos = [
-    { id: 1, name: "Create a Svelte starter app", completed: true },
-    { id: 2, name: "Create your first component", completed: true },
-    { id: 3, name: "Complete the rest of the tutorial", completed: false },
-  ];
-  $: console.log("todos : ", todos);
+  export let todos;
 
   let totalTodos = todos.length;
   let completedTodos = todos.filter((todo) => todo.completed).length;
