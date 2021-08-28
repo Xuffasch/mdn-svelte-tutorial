@@ -3,7 +3,25 @@
   $: console.log("todos : ", todos);
 
   $: totalTodos = todos.length;
+
+  let newTodoId;
+  $: {
+    if (totalTodos == 0) {
+      newTodoId = 1;
+    } else {
+      newTodoId = Math.max(...todos.map((t) => t.id)) + 1;
+    }
+  }
+
   $: completedTodos = todos.filter((todo) => todo.completed).length;
+
+  let newTodoName = "";
+  $: console.log(newTodoName);
+
+  function addTodo() {
+    todos = [...todos, { id: newTodoId, name: newTodoName, completed: false }];
+    newTodoName = "";
+  }
 
   function removeTodo(todo) {
     todos = todos.filter((t) => t.id != todo.id);
@@ -14,11 +32,17 @@
 
 <!-- Form  -->
 <div class="todoapp  stack-large">
-  <form>
+  <form on:submit|preventDefault={addTodo}>
     <h2 class="label-wrapper">
       <label for="todo-0" class="label__lg">What needs to be done ?</label>
     </h2>
-    <input type="text" id="todo-0" autocomplete="off" class="input input__lg" />
+    <input
+      type="text"
+      id="todo-0"
+      bind:value={newTodoName}
+      autocomplete="off"
+      class="input input__lg"
+    />
     <button type="submit" disabled="" class="btn btn __primary btn__lg">
       Add
     </button>
