@@ -1,3 +1,15 @@
+<script>
+  let todos = [
+    { id: 1, name: "Create a Svelte starter app", completed: true },
+    { id: 2, name: "Create your first component", completed: true },
+    { id: 3, name: "Complete the rest of the tutorial", completed: false },
+  ];
+  $: console.log("todos : ", todos);
+
+  let totalTodos = todos.length;
+  let completedTodos = todos.filter((todo) => todo.completed).length;
+</script>
+
 <h1>Svelte To-do list</h1>
 
 <!-- Form  -->
@@ -35,7 +47,7 @@
   <h2 id="list-heading">2 out of 3 itemps completed</h2>
 
   <!-- Todos -->
-  <ul role="list" class="" aria-labelledby="list-heading">
+  <!-- <ul role="list" class="" aria-labelledby="list-heading">
     <li class="todo">
       <div class="stack-small">
         <form class="stack-small">
@@ -117,6 +129,38 @@
         </form>
       </div>
     </li>
+  </ul> -->
+
+  <!-- Todo with #each -->
+  <ul role="list" class="todo-list stack-large" aria-labelledby="list-heading">
+    {#each todos as todo (todo.id)}
+      <li class="todo">
+        <div class="stack-small">
+          <div class="c-cb">
+            <input
+              type="checkbox"
+              id="todo-{todo.id}"
+              checked={todo.completed}
+            />
+            <label for="todo-{todo.id}" class="todo-label">
+              {todo.name}
+            </label>
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn">
+              Edit
+              <span class="visually-hidden">{todo.name}</span>
+            </button>
+            <button type="button" class="btn btn__danger">
+              Delete
+              <span class="visually-hidden">{todo.name}</span>
+            </button>
+          </div>
+        </div>
+      </li>
+    {:else}
+      <li>Nothing to display</li>
+    {/each}
   </ul>
 
   <div class="btn-group">
