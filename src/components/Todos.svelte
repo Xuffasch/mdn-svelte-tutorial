@@ -1,8 +1,13 @@
 <script>
   export let todos;
+  $: console.log("todos : ", todos);
 
-  let totalTodos = todos.length;
-  let completedTodos = todos.filter((todo) => todo.completed).length;
+  $: totalTodos = todos.length;
+  $: completedTodos = todos.filter((todo) => todo.completed).length;
+
+  function removeTodo(todo) {
+    todos = todos.filter((t) => t.id != todo.id);
+  }
 </script>
 
 <h1>Svelte To-do list</h1>
@@ -39,7 +44,9 @@
   </div>
 
   <!-- Infos on displayed items -->
-  <h2 id="list-heading">2 out of 3 itemps completed</h2>
+  <h2 id="list-heading">
+    {completedTodos} out of {totalTodos} itemps completed
+  </h2>
 
   <!-- Todos -->
   <!-- <ul role="list" class="" aria-labelledby="list-heading">
@@ -135,6 +142,9 @@
             <input
               type="checkbox"
               id="todo-{todo.id}"
+              on:click={() => {
+                todo.completed = !todo.completed;
+              }}
               checked={todo.completed}
             />
             <label for="todo-{todo.id}" class="todo-label">
@@ -146,7 +156,11 @@
               Edit
               <span class="visually-hidden">{todo.name}</span>
             </button>
-            <button type="button" class="btn btn__danger">
+            <button
+              type="button"
+              on:click={() => removeTodo(todo)}
+              class="btn btn__danger"
+            >
               Delete
               <span class="visually-hidden">{todo.name}</span>
             </button>
