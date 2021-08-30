@@ -1,4 +1,7 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+
   export let todo;
 </script>
 
@@ -23,7 +26,7 @@
     </button>
     <button
       type="button"
-      on:click={() => console.log("TODO : To be implemented")}
+      on:click={() => dispatch("remove", todo)}
       class="btn btn__danger"
     >
       Delete

@@ -133,7 +133,7 @@
             </button>
           </div>
         </div> -->
-        <Todo {todo} />
+        <Todo {todo} on:remove={(e) => removeTodo(e.detail)} />
       </li>
     {:else}
       <li>Nothing to display</li>

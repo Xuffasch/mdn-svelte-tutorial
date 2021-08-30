@@ -152,4 +152,32 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
     childvar is a variable declared in svelte component MyComponent
     parentVar is a variable declared in the component calling My Component
 
+12. svelte : dispatch event to communicate to parent component
+
+    A child component can send events with an object carrying data to its parent
+
+    In the child component:
+
+    ```html
+    <script>
+      import { createEventDispatcher } from 'svelte';
+      const dispatch = createEventDispatcher();
+
+      let data = {
+        v1: ...,
+        v2: ...
+      }
+    </script>
+
+    <!-- in the template -->
+
+    <div on:click={ () => dispatch("myEvent", data: data)}>
+    ```
+
+    In the parent component
+
+    ```html
+    <ChildComponent on:myEvent={ (e) => myEventHandler(e.detail)}>
+    ```
+
 [mdn-svelte]: https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Svelte_getting_started
