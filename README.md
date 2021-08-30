@@ -393,6 +393,45 @@ npx or pnpx create vite _name_of_your_project_ --template svelte
     </script>
     ```
 
+22. svelte : writable store
+
+Stores in svelte allows the management of state data without being linked to a specific component hierarchy
+
+writable store can store a data then have this data updated later.
+
+```js
+// in a stores.js file
+
+import { writable } from "svelte";
+
+export const myStore = writable(
+  "Initial value for the store is a string in this case"
+);
+```
+
+Import in a svelte component interested to interact with the store
+
+```html
+<script>
+  import { onDestroy } from "svelte";
+  import { myStore } from "store";
+
+  let message = "";
+
+  const unsubscribe = myStore.subscribe((value) => (message = value));
+
+  onDestroy(unsubscribe);
+</script>
+```
+
+To retrieve the value of the store each time its content change, we call the subscribe function of the store. This function expects a listener function that uses the updated value of the store to do something with it.
+
+In the above case, each new `value` will be used to update the component local variable `message`.
+
+The `subscribe` function of a store returns a function to unsubscribe the listener function, i.e. it removes the listener function from the store which avoids memory leak in case the component is destroyed then recreated.
+
+This unsubscribe function is called by the svelte component lifecycle function `onDestroy`, which runs when the component is removed from the DOM.
+
 ## Componentizing a Svelte App
 
 In that chapter of the tutorial, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.
