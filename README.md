@@ -180,4 +180,13 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
     <ChildComponent on:myEvent={ (e) => myEventHandler(e.detail)}>
     ```
 
+In the chapter, **Componentizing our Svelte App**, the advice to give a single responsibilty needs clarification.
+
+- The `Todo` component: the single responsility assigned to it is the _control_ of the state of a todo.
+
+  Its responsibilities :
+
+  - Provide means : UI, controls ..., to let the user settle on a new validated state of the todo.
+  - Tell the Parent `Todos` component what it should do with the new state by dispatch the proper event.
+
 [mdn-svelte]: https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Svelte_getting_started

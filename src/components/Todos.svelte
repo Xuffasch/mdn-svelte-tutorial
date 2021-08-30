@@ -37,6 +37,13 @@
   function removeTodo(todo) {
     todos = todos.filter((t) => t.id != todo.id);
   }
+
+  function updateTodo(todo) {
+    // search for the updated todo in the list of todos
+    const i = todos.findIndex((t) => t.id === todo.id);
+    // get the todo old values then apply the todo new values received by the update event
+    todos[i] = { ...todos[i], ...todo };
+  }
 </script>
 
 <h1>Svelte To-do list</h1>
@@ -133,7 +140,11 @@
             </button>
           </div>
         </div> -->
-        <Todo {todo} on:remove={(e) => removeTodo(e.detail)} />
+        <Todo
+          {todo}
+          on:update={(e) => updateTodo(e.detail)}
+          on:remove={(e) => removeTodo(e.detail)}
+        />
       </li>
     {:else}
       <li>Nothing to display</li>
