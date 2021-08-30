@@ -453,6 +453,28 @@ The paragraph element displays the content of the store, and when clicked, the d
 
 The subscription and unsubscription are handled by Svelte.
 
+24. ARIA `role` attribute
+
+The html `role` attribute belongs to the set of a11y attributes to helps screen reader. In this case, it provides information about the nature of the element when the attribute is added.
+
+As its value supersede the semantic provided by html5 element, it is better to use them on non-semantic elements such as div
+
+```html
+<div role="alert"></div>
+```
+
+25. ARIA `aria-live` region
+
+When an element can change without user interaction, it is better to give it an `aria-live` attribute to tell screen reader to alert the user when that element changes.
+
+The `aria-live` attribute can have 3 levels of alert:
+
+- off: screen reader stays silent when the element changes. All element are by default 'off' for its aria-live attribute.
+- polite: screen reader will speak of the change on the element, whenever it becomes idle
+- assertive: screen reader will stop anything it is currently reading to alert the user by immediately reading the changes on the element
+
+Some aria `role` attribute value will automatically set the level of aria-live attribute. For example `role="alert"`, automatically set `aria-live` to `assertive`.
+
 ## Componentizing a Svelte App
 
 In that chapter of the tutorial, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.

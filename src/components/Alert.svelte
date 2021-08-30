@@ -3,7 +3,7 @@
 </script>
 
 {#if $alert}
-  <div on:click={() => ($alert = "")}>
+  <div role="alert" on:click={() => ($alert = "")}>
     <p>{$alert}</p>
   </div>
 {/if}
