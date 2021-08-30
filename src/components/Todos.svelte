@@ -3,21 +3,24 @@
   import FilterButton from "./FilterButton.svelte";
   import Todo from "./Todo.svelte";
   import MoreActions from "./MoreActions.svelte";
+  import TodoStatus from "./TodoStatus.svelte";
 
   export let todos;
 
-  $: totalTodos = todos.length;
+  // $: totalTodos = todos.length;
 
-  let newTodoId;
-  $: {
-    if (totalTodos == 0) {
-      newTodoId = 1;
-    } else {
-      newTodoId = Math.max(...todos.map((t) => t.id)) + 1;
-    }
-  }
+  // let newTodoId;
+  // $: {
+  //   if (todos.length == 0) {
+  //     newTodoId = 1;
+  //   } else {
+  //     newTodoId = Math.max(...todos.map((t) => t.id)) + 1;
+  //   }
+  // }
 
-  $: completedTodos = todos.filter((todo) => todo.completed).length;
+  let newTodoId = todos.length ? Math.max(...todos.map((t) => t.id)) + 1 : 1;
+
+  // $: completedTodos = todos.filter((todo) => todo.completed).length;
 
   let newTodoName = "";
   $: console.log(newTodoName);
@@ -113,9 +116,11 @@
   <FilterButton bind:myfilter={filter} />
 
   <!-- Infos on displayed items -->
-  <h2 id="list-heading">
+  <!-- <h2 id="list-heading">
     {completedTodos} out of {totalTodos} itemps completed
-  </h2>
+  </h2> -->
+
+  <TodoStatus {todos} />
 
   <!-- Todo with #each -->
   <ul role="list" class="todo-list stack-large" aria-labelledby="list-heading">
