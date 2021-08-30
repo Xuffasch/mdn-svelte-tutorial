@@ -310,6 +310,58 @@ npx or pnpx create vite _name_of_your_project_ --template svelte
     <Component flag={false} />
     ```
 
+19. html : Select the text of an input text element
+
+    ```
+    ìnput.select()
+    ```
+
+    input points to an element in the template.
+
+20. svelte: use:action to add functions component
+
+        Svelte use:action directive add function to run :
+
+        - after the element is added to the DOM
+        - aftet the element is removed from the DOM
+
+        ```html
+        <Component use:actionFunction></Component>
+        ```
+
+        ```js
+        actionFunction(node) {
+          ... do something with the received node
+
+          return {
+            destroy: () => node... ,
+          }
+        }
+        ```
+
+        The action function takes a node as input so we got a reference to the node on which changes are applied.
+
+        The action function should return an object with the property "destroy" which is a function.
+
+        This function will be called by Svelte to run when the Component is removed from the DOM.
+
+        One use case is the removal of event listener after a component is destroyed in order to avoid memory leak :
+
+        ```js
+        function selectOnFocus(node) {
+          if (node && typeof node.select === 'function' ) {               // make sure node is defined and has a select() method
+            const onFocus = event => node.select()                        //
+            node.addEventListener('focus', onFocus)                       //
+
+            return {
+              destroy: () => node.removeEventListener('focus', onFocus)   // this will be executed when the node is removed from the DOM
+            }
+          }
+        }
+        ```
+
+        The focus is a state gained by an input element when navigating by the `Tab` key.
+
 ## Componentizing a Svelte App
 
 In that chapter of the tutorial, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.

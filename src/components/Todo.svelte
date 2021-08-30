@@ -40,6 +40,17 @@
     update({ name: name });
     editing = false;
   }
+
+  function selectOnFocus(node) {
+    if (node && node.select === "function") {
+      const onFocus = (event) => node.select();
+      node.addEventListener("focus", onFocus);
+
+      return {
+        destroy: () => node.removeEventListener("focus", onFocus),
+      };
+    }
+  }
 </script>
 
 <div class="stack-small">
@@ -57,6 +68,7 @@
           <input
             bind:value={name}
             bind:this={nameEl}
+            use:selectOnFocus
             id="todo-{todo.id}"
             type="text"
             autoComplete="off"
