@@ -432,6 +432,27 @@ The `subscribe` function of a store returns a function to unsubscribe the listen
 
 This unsubscribe function is called by the svelte component lifecycle function `onDestroy`, which runs when the component is removed from the DOM.
 
+23. svelte : auto-subscribe store
+
+A lighter syntx to use a store involve the $store helper:
+
+```html
+<script>
+  import { alert } from '../stores.js'
+</script>
+
+{#if $alert}
+<div on:click={() => $alert = ''}>
+  <p>{ $alert }</p>
+</div>
+{/if}
+
+```
+
+The paragraph element displays the content of the store, and when clicked, the div element can update the store value to '';
+
+The subscription and unsubscription are handled by Svelte.
+
 ## Componentizing a Svelte App
 
 In that chapter of the tutorial, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.

@@ -4,6 +4,7 @@
   import Todo from "./Todo.svelte";
   import MoreActions from "./MoreActions.svelte";
   import TodoStatus from "./TodoStatus.svelte";
+  import { alert } from "../stores/stores";
 
   export let todos;
   let todoStatus;
@@ -36,13 +37,14 @@
 
   function addTodo(newTodoName) {
     todos = [...todos, { id: newTodoId, name: newTodoName, completed: false }];
-    newTodoName = "";
+    $alert = `Todo ${newTodoName} has been added`;
   }
 
   function removeTodo(todo) {
     todos = todos.filter((t) => t.id != todo.id);
     // We call the binded todoStatus focus function that it exposes with its exported function variable
     todoStatus.focus();
+    $alert = `Todo ${todo.name} has been deleted`;
   }
 
   function updateTodo(todo) {
@@ -50,13 +52,22 @@
     const i = todos.findIndex((t) => t.id === todo.id);
     // get the todo old values then apply the todo new values received by the update event
     todos[i] = { ...todos[i], ...todo };
+    $alert = `Todo ${todo.name} has been updated`;
+  }
+
+  $: {
+    if (filter === "all") $alert = "Browsing all todos";
+    else if (filter == "active") $alert = "Browsing active todos";
+    else if (filter == "completed ") $alert = "Browsing completed todos";
   }
 
   function checkAllTodos(completed) {
-    todos.forEach((t, i) => (todos[i].completed = completed));
+    todos = todos.map((t) => ({ ...t, completed }));
+    $alert = `${completed ? "Checked" : "Unchecked"} ${todos.length} todos`;
   }
 
   function removeCompletedTodos() {
+    $alert = `Removed ${todos.filter((t) => t.completed).length} todos`;
     todos = todos.filter((t) => !t.completed);
   }
 </script>
