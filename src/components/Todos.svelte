@@ -6,6 +6,7 @@
   import TodoStatus from "./TodoStatus.svelte";
 
   export let todos;
+  let todoStatus;
 
   // $: totalTodos = todos.length;
 
@@ -40,6 +41,8 @@
 
   function removeTodo(todo) {
     todos = todos.filter((t) => t.id != todo.id);
+    // We call the binded todoStatus focus function that it exposes with its exported function variable
+    todoStatus.focus();
   }
 
   function updateTodo(todo) {
@@ -120,7 +123,7 @@
     {completedTodos} out of {totalTodos} itemps completed
   </h2> -->
 
-  <TodoStatus {todos} />
+  <TodoStatus bind:this={todoStatus} {todos} />
 
   <!-- Todo with #each -->
   <ul role="list" class="todo-list stack-large" aria-labelledby="list-heading">

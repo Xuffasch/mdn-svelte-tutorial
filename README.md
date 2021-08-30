@@ -362,6 +362,35 @@ npx or pnpx create vite _name_of_your_project_ --template svelte
 
         The focus is a state gained by an input element when navigating by the `Tab` key.
 
+21. svelte : expose child component methods to parent
+
+    a component method is exposed to its parent by :
+
+    - exporting a function definition
+
+    ```js
+    <script>
+      export function fname() {
+        ...
+      }
+    </script>
+
+    ```
+
+    - exporting a const with a function expression
+
+    ```js
+    <script> export const fname = () => {}; </script>
+    ```
+
+    Once the function is exposed, with a reference to the child component in the parent component, the child component method can be called simply with a dot notation:
+
+    ```js
+    let child; // set from bind:this directive for example
+
+    child.fname();
+    ```
+
 ## Componentizing a Svelte App
 
 In that chapter of the tutorial, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.
