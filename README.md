@@ -385,10 +385,12 @@ npx or pnpx create vite _name_of_your_project_ --template svelte
 
     Once the function is exposed, with a reference to the child component in the parent component, the child component method can be called simply with a dot notation:
 
-    ```js
-    let child; // set from bind:this directive for example
-
-    child.fname();
+    ```html
+    // in the parent component
+    <script>
+      let child; // set from bind:this directive for example
+      child.fname();
+    </script>
     ```
 
 ## Componentizing a Svelte App
