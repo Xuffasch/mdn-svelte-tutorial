@@ -1,5 +1,6 @@
 <script>
   import FilterButton from "./FilterButton.svelte";
+  import Todo from "./Todo.svelte";
 
   export let todos;
   $: console.log("todos : ", todos);
@@ -103,7 +104,7 @@
   <ul role="list" class="todo-list stack-large" aria-labelledby="list-heading">
     {#each filterTodos(filter, todos) as todo (todo.id)}
       <li class="todo">
-        <div class="stack-small">
+        <!-- <div class="stack-small">
           <div class="c-cb">
             <input
               type="checkbox"
@@ -131,7 +132,8 @@
               <span class="visually-hidden">{todo.name}</span>
             </button>
           </div>
-        </div>
+        </div> -->
+        <Todo {todo} />
       </li>
     {:else}
       <li>Nothing to display</li>
