@@ -2,7 +2,7 @@
 
 npx or pnpx create vite _name_of_your_project_ --template svelte
 
-The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
+## The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
 
 1.  Provide props to the App.svelte component:
 
@@ -237,7 +237,55 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
 
     When an element carries this `bind:this={elementVar}` directive is mounted, it initializes the variable elementVar with a reference to the element having that directive.
 
-In the chapter, **Componentizing our Svelte App**, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.
+16. svelte : component lifecycle
+
+    When a svelte component is initiated, the script part is run first, so the elements in the template do not exist yet so function using them will have an `undefined` reference error.
+
+    Functions needing a template element should be called in the svelte lifecycle element `onMount` that will be executed when the template is mounted to the DOM.
+
+    ```js
+    <script>
+      import { onMount } from 'svelte';
+      ...
+      let el;
+
+      onMount( () => {
+        ...use of document.getElementById or bind:this element are safe to use inside of onMount
+      });
+    </script>
+
+
+    <Component bind:this={el}>
+
+    ```
+
+17. svelte : passing a boolean prop
+
+    It suffices to pass a prop by its name to a child component expecting this props as a boolean value for the child to receive an initial value for it of `true`.
+
+    ```html
+    <!-- In the parent -->
+    <Child flag />
+    ```
+
+    ```html
+    <!-- In the parent -->
+    <script>
+      export let flag = false;
+    </script>
+    ```
+
+    Because the parent passed the flag prop, the child will set its prop as true even it the child initializes for itself as false;
+
+    To pass boolean value which is false
+
+    ```js
+    <Component flag={false} />
+    ```
+
+## Componentizing a Svelte App
+
+In that chapter of the tutorial, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.
 
 - The `Todo` component: the single responsility assigned to it is the _control_ of the state of a todo.
 

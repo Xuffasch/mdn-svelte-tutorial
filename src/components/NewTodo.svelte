@@ -1,9 +1,15 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   let dispatch = createEventDispatcher();
+
+  export let autofocus = false;
 
   let newTodoName;
   let nameInput;
+
+  onMount(() => {
+    autofocus && nameInput.focus();
+  });
 
   const addTodo = () => {
     dispatch("addTodo", newTodoName);

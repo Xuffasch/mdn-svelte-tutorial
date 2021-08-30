@@ -5,7 +5,6 @@
   import MoreActions from "./MoreActions.svelte";
 
   export let todos;
-  $: console.log("todos : ", todos);
 
   $: totalTodos = todos.length;
 
@@ -75,7 +74,7 @@
       Add
     </button>
   </form> -->
-  <NewTodo on:addTodo={(e) => addTodo(e.detail)} />
+  <NewTodo autofocus on:addTodo={(e) => addTodo(e.detail)} />
 
   <!-- Filter on items to display -->
   <!-- <div class="filters btn-group stack-exception">
