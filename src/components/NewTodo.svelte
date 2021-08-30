@@ -3,14 +3,17 @@
   let dispatch = createEventDispatcher();
 
   let newTodoName;
+  let nameInput;
 
   const addTodo = () => {
     dispatch("addTodo", newTodoName);
     newTodoName = "";
+    nameInput.focus();
   };
 
   const onCancel = () => {
     newTodoName = "";
+    nameInput.focus();
   };
 </script>
 
@@ -28,6 +31,7 @@
     type="text"
     id="todo-0"
     bind:value={newTodoName}
+    bind:this={nameInput}
     autocomplete="off"
     class="input input__lg"
   />

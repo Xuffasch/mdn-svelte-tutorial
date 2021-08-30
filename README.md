@@ -231,7 +231,11 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
 
     ```
 
-    Component reacts to an Escape key push by calling myFunction after the event key is found to be "Escape"
+    Component reacts to an Escape key push by calling myFunction after the event key is found to be "Escape".
+
+15. svelte : create a reference pointing to an element
+
+    When an element carries this `bind:this={elementVar}` directive is mounted, it initializes the variable elementVar with a reference to the element having that directive.
 
 In the chapter, **Componentizing our Svelte App**, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.
 
