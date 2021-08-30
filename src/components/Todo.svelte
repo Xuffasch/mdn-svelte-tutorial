@@ -1,7 +1,8 @@
 <script>
   import { tick, createEventDispatcher } from "svelte";
-  import { prevent_default } from "svelte/internal";
   const dispatch = createEventDispatcher();
+
+  import { selectOnFocus } from "../lib/actions";
 
   export let todo;
 
@@ -41,16 +42,16 @@
     editing = false;
   }
 
-  function selectOnFocus(node) {
-    if (node && node.select === "function") {
-      const onFocus = (event) => node.select();
-      node.addEventListener("focus", onFocus);
+  // function selectOnFocus(node) {
+  //   if (node && node.select === "function") {
+  //     const onFocus = (event) => node.select();
+  //     node.addEventListener("focus", onFocus);
 
-      return {
-        destroy: () => node.removeEventListener("focus", onFocus),
-      };
-    }
-  }
+  //     return {
+  //       destroy: () => node.removeEventListener("focus", onFocus),
+  //     };
+  //   }
+  // }
 </script>
 
 <div class="stack-small">
