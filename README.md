@@ -116,10 +116,14 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
 
     If template elements depends on a function, all variables changing the result of that function should be explicity featured in the template expression, otherwise Svelte is not able to react to the change of that variable and recalculate the updated list of elements.
 
-    if f() {
-    ... variable v1 is used to calculate the result
-    ... but not called by a parameter but directly accessed inside the function
+    Suppose we have a function f :
+
+    ```
+    f() {
+      ... variable v1 is used to calculate the result
+      ... but not called by a parameter but directly accessed inside the function
     }
+    ```
 
     in the template expression :
 
@@ -140,7 +144,6 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
     ```
 
 11. svelte : Two-way binding to send data from child to parent
-
 
     To pass data from the child back up to its parent, we can bind a child variable to a parent variable via the `bind:` directive :
 
