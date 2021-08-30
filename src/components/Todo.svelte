@@ -8,6 +8,7 @@
 
   // Initialize internal state variable to manage passed in todo
   let editing = false;
+
   let name = todo.name;
   let nameEl;
 
@@ -15,8 +16,6 @@
 
   async function onEdit() {
     editing = true;
-    await tick();
-    nameEl.focus();
   }
 
   function onToggle() {
@@ -42,16 +41,8 @@
     editing = false;
   }
 
-  // function selectOnFocus(node) {
-  //   if (node && node.select === "function") {
-  //     const onFocus = (event) => node.select();
-  //     node.addEventListener("focus", onFocus);
-
-  //     return {
-  //       destroy: () => node.removeEventListener("focus", onFocus),
-  //     };
-  //   }
-  // }
+  const focusOnInit = (node) =>
+    node && typeof node.focus === "function" && node.focus();
 </script>
 
 <div class="stack-small">
@@ -70,6 +61,7 @@
             bind:value={name}
             bind:this={nameEl}
             use:selectOnFocus
+            use:focusOnInit
             id="todo-{todo.id}"
             type="text"
             autoComplete="off"
