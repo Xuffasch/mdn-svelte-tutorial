@@ -8,6 +8,7 @@
 
   // Initialize internal state variable to manage passed in todo
   let editing = false;
+  let editButtonPressed = false;
 
   let name = todo.name;
   let nameEl;
@@ -16,7 +17,10 @@
 
   async function onEdit() {
     editing = true;
+    editButtonPressed = true;
   }
+
+  const focusEditButton = (node) => editButtonPressed && node.focus();
 
   function onToggle() {
     update({ completed: !todo.completed });
@@ -98,7 +102,7 @@
       </label>
     </div>
     <div class="btn-group">
-      <button type="button" on:click={onEdit} class="btn">
+      <button type="button" use:focusEditButton on:click={onEdit} class="btn">
         Edit
         <span class="visually-hidden">{todo.name}</span>
       </button>
