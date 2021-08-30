@@ -1,4 +1,5 @@
 <script>
+  import NewTodo from "./NewTodo.svelte";
   import FilterButton from "./FilterButton.svelte";
   import Todo from "./Todo.svelte";
   import MoreActions from "./MoreActions.svelte";
@@ -30,7 +31,7 @@
       ? todos.filter((t) => t.completed)
       : todos;
 
-  function addTodo() {
+  function addTodo(newTodoName) {
     todos = [...todos, { id: newTodoId, name: newTodoName, completed: false }];
     newTodoName = "";
   }
@@ -59,7 +60,7 @@
 
 <!-- Form  -->
 <div class="todoapp  stack-large">
-  <form on:submit|preventDefault={addTodo}>
+  <!-- <form on:submit|preventDefault={addTodo}>
     <h2 class="label-wrapper">
       <label for="todo-0" class="label__lg">What needs to be done ?</label>
     </h2>
@@ -73,7 +74,8 @@
     <button type="submit" disabled="" class="btn btn __primary btn__lg">
       Add
     </button>
-  </form>
+  </form> -->
+  <NewTodo on:addTodo={(e) => addTodo(e.detail)} />
 
   <!-- Filter on items to display -->
   <!-- <div class="filters btn-group stack-exception">

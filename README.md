@@ -222,6 +222,17 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
 
     In the code, we chose the 2nd solution as it is shorter.
 
+14. svelte : on:keydown
+
+    Svelte component can event listener to key push. To react to the Escape key :
+
+    ```js
+    <Component on:keydown={(e) => e.key == "Escape" && myFunction()}>
+
+    ```
+
+    Component reacts to an Escape key push by calling myFunction after the event key is found to be "Escape"
+
 In the chapter, **Componentizing our Svelte App**, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.
 
 - The `Todo` component: the single responsility assigned to it is the _control_ of the state of a todo.
