@@ -1,6 +1,7 @@
 <script>
   import FilterButton from "./FilterButton.svelte";
   import Todo from "./Todo.svelte";
+  import MoreActions from "./MoreActions.svelte";
 
   export let todos;
   $: console.log("todos : ", todos);
@@ -43,6 +44,14 @@
     const i = todos.findIndex((t) => t.id === todo.id);
     // get the todo old values then apply the todo new values received by the update event
     todos[i] = { ...todos[i], ...todo };
+  }
+
+  function checkAllTodos(completed) {
+    todos.forEach((t, i) => (todos[i].completed = completed));
+  }
+
+  function removeCompletedTodos() {
+    todos = todos.filter((t) => !t.completed);
   }
 </script>
 
@@ -151,8 +160,13 @@
     {/each}
   </ul>
 
-  <div class="btn-group">
+  <!-- <div class="btn-group">
     <button type="button" class="btn btn__primary">Check all</button>
     <button type="button" class="btn btn__primary">Remove completed</button>
-  </div>
+  </div> -->
+
+  <MoreActions
+    on:checkAll={(e) => checkAllTodos(e.detail)}
+    on:removeCompleted={removeCompletedTodos}
+  />
 </div>

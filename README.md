@@ -180,7 +180,49 @@ The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
     <ChildComponent on:myEvent={ (e) => myEventHandler(e.detail)}>
     ```
 
-In the chapter, **Componentizing our Svelte App**, the advice to give a single responsibilty needs clarification.
+13. svelte : reacting to array and object changes
+
+    In the `Todos` component, if we change the completed variable of each todos this way :
+
+    ```js
+    todos.forEach((t) => (t.completed = completed));
+    ```
+
+    Svelte will not be able to catch the update and change the UI according to the change.
+
+    A rule of thumb is that **the name of the updated variable must appear on the left hand side of an assignment**.
+
+    The previous code should be completed with
+
+    ```js
+    todos.forEach((t) => (t.completed = completed));
+    todos = todos;
+    ```
+
+    The same array updated can also be implement as follows :
+
+    ```js
+    todos.forEach((t, i) => (todos[i].completed = completed));
+    ```
+
+    todos appears on the left hand side of the assignment of a new value of completed, Svelte will react after this function runs.
+
+    Or the update can be done by providing a new array:
+
+    ```js
+    todos = todos.map((t) => {
+      return {
+        ...t,
+        completed: completed,
+      };
+    });
+    ```
+
+    Array.map creates a new array based on another array. Here each element is replaced with a new version having a `completed` parameter replaced by a new value.
+
+    In the code, we chose the 2nd solution as it is shorter.
+
+In the chapter, **Componentizing our Svelte App**, the advice to give a single responsibilty needs clarification. Let's clarify the single responsibility of some of the components.
 
 - The `Todo` component: the single responsility assigned to it is the _control_ of the state of a todo.
 
