@@ -259,7 +259,34 @@ npx or pnpx create vite _name_of_your_project_ --template svelte
 
     ```
 
-17. svelte : passing a boolean prop
+17. svelte : function needing component update
+
+    If in the course of a function execution, the template is updated and the function needs to _immediately_ use with the updated template, the follow-up use will fail as the component is not updated immediately after any state change. Svelte bundle all the updates to apply them together.
+
+    To carry out these follow-up actions in the function, we need to tell Svelte that other things need to be done after it carried out the updates the function has asked. This reminder is provided by the `tick` function. Sometimes, the follow up actions may not be possible before the change are applied (elements in the template may not yet exist).
+
+    ```js
+    <script>
+      import { tick } from 'svelte';
+
+      let el;
+
+      function myFunction() {
+        v1 = some new value
+
+        await tick();
+        // ... the retrieved el is the updated el resulting from the change of prop with the new value of v1
+        el.select();
+      }
+
+    </script>
+
+    <div bind:this={el} prop={v1}>
+    <div>
+
+    ```
+
+18. svelte : passing a boolean prop
 
     It suffices to pass a prop by its name to a child component expecting this props as a boolean value for the child to receive an initial value for it of `true`.
 

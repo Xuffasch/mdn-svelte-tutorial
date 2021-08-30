@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { tick, createEventDispatcher } from "svelte";
   import { prevent_default } from "svelte/internal";
   const dispatch = createEventDispatcher();
 
@@ -8,11 +8,14 @@
   // Initialize internal state variable to manage passed in todo
   let editing = false;
   let name = todo.name;
+  let nameEl;
 
   // edition functions on existing todo
 
-  function onEdit() {
+  async function onEdit() {
     editing = true;
+    await tick();
+    nameEl.focus();
   }
 
   function onToggle() {
@@ -53,6 +56,7 @@
           >
           <input
             bind:value={name}
+            bind:this={nameEl}
             id="todo-{todo.id}"
             type="text"
             autoComplete="off"
