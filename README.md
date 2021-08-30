@@ -1,48 +1,152 @@
-# Svelte + Vite
+# This a Svelte + Vite app create using Vite Svelte template. You can initialize it with :
 
-This template should help get you started developing with Svelte in Vite.
+npx or pnpx create vite _name_of_your_project_ --template svelte
 
-## Recommended IDE Setup
+The takeaways from the chapters of the [MDN Svelte Tutorial][mdn-svelte]
 
-[VSCode](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+1.  Provide props to the App.svelte component:
 
-## Need an official Svelte framework?
+    In the main.js file imported by the index.html, initialize the App component with a `prop` property :
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+    ```js
+    import App from "./App.svelte";
 
-## Technical considerations
+    const app = new App({
+      target: document.getElementById("app"),
+      props: {
+        name: "world",
+      },
+    });
 
-**Why use this over SvelteKit?**
+    export default app;
+    ```
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-  `vite dev` and `vite build` wouldn't work in a SvelteKit environment, for example.
+2.  a11y : Declare that a button has been pressed
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+    To declare that a button has been pressed, which is useful if the state of the app/page is a result of this button action, we use the aria attribute `aria-pressed`:
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+    ```html
+    <button aria-pressed="true">See All elements</button>
+    ```
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+3.  a11y : Hide text from sighted users but useful to screen readers
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+    Screen readers read the content in our html to provide the info vocally. So we can have more text to provide than we want or have place to display them.
 
-**Why include `.vscode/extensions.json`?**
+    Wrap text providing longer version of content in `span` elements then hide them with class.
+    This hiding strategy is interesting to apply on buttons or control elements where we usually only provide short `label` elements to describe their function:
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+    ```html
+    <button>
+      <span class="visually-hidden">Show</span>
+      <span>All</span>
+      <span class="visually-hidden">tasks</span>
+    </button>
+    ```
 
-**Why enable `checkJs` in the JS template?**
+4.  a11y: Declare a role to `ul` and `ol` elements
 
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
+    Even if `ul` and `ol` elements have by default a function of list, visual styles may break that functionality.
 
-**Why is HMR not preserving my local component state?**
+    Declare of role of `list` on restore the semantic meaning of these elements
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
+    ```html
+    <ul role="list">
+      ...
+    </ul>
+    ```
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+5.  a11y: Declare a text element as label of another
 
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+    ```html
+    <h1 id="list-heading">...</h1>
+
+    <ul ... aria-labelledby="list-heading">
+      ...
+    </ul>
+    ```
+
+    the `ul` element tells screen readers that it is labelled by the heading element with the id "list-heading". The content of that heading is then used as a description of the list element.
+
+6.  global.css : in Vite projects, import from assets folder
+
+    Place the file in the assets folder at the root of the project then add the file in the App.svelte with :
+
+    ```html
+    <script>
+      import "./assets/global.css";
+      ...
+    </script>
+    ```
+
+7.  svelte : use of javascript in element attributes
+
+    With `todo` provided by an {#each} directive, js variables and expressions can be used in attributes expressions without the `$` sign.
+
+    ```html
+    <input type="checkbox" id="todo-{todo.id}" checked="{todo.completed}" />
+    <label for="todo-{todo.id}" class="todo-label"></label>
+    ```
+
+8.  svelte : use of function for element event handler
+
+    Suppose we have defined a function to use as an element event handler.
+
+    - If the handler does not use any params, call the function like this:
+
+      `on:event={handleEvent}`
+
+    - If the handle needs params, call the function like this :
+
+      `on:event={() => handleEvent(param)}`
+
+      **Error - Do not call the handler using params like below :**
+
+      `on:event={handleEvent(param)}`
+
+      This is will call the function with the params then pass the result as a handler.
+
+9.  svelte : conditionally apply a class on an element
+
+    `<div class:classname={set_classname}`
+
+    `set_classname` is a expression that evaluates to a boolean value
+
+10. svelte : reactivity
+
+    If template elements depends on a function, all variables changing the result of that function should be explicity featured in the template expression, otherwise Svelte is not able to react to the change of that variable and recalculate the updated list of elements.
+
+    if f() {
+    ... variable v1 is used to calculate the result
+    ... but not called by a parameter but directly accessed inside the function
+    }
+
+    in the template expression :
+
+    ```
+    {#each f()}
+
+    {/each}
+    ```
+
+    the each block will not be recalculated if v1 changes
+
+    To have the #each block recalculate on change of v1, the function should explicitely use v1 as a parameter then used inside the #each block as:
+
+    ```
+    {#each f(v1)}
+
+    {/each}
+    ```
+
+11. svelte : Two-way binding to send data from child to parent
+
+
+    To pass data from the child back up to its parent, we can bind a child variable to a parent variable via the `bind:` directive :
+
+    `<MyComponent bind:childvar={parentVar}``
+
+    childvar is a variable declared in svelte component MyComponent
+    parentVar is a variable declared in the component calling My Component
+
+[mdn-svelte]: https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Svelte_getting_started
