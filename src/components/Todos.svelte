@@ -1,4 +1,6 @@
 <script>
+  import FilterButton from "./FilterButton.svelte";
+
   export let todos;
   $: console.log("todos : ", todos);
 
@@ -57,7 +59,7 @@
   </form>
 
   <!-- Filter on items to display -->
-  <div class="filters btn-group stack-exception">
+  <!-- <div class="filters btn-group stack-exception">
     <button
       class="btn toggle-btn"
       class:btn__primary={filter === "all"}
@@ -88,7 +90,9 @@
       <span>Completed</span>
       <span class="visually-hidden">tasks</span>
     </button>
-  </div>
+  </div> -->
+
+  <FilterButton bind:myfilter={filter} />
 
   <!-- Infos on displayed items -->
   <h2 id="list-heading">
