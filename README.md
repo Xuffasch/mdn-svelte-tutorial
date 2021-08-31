@@ -395,85 +395,191 @@ npx or pnpx create vite _name_of_your_project_ --template svelte
 
 22. svelte : writable store
 
-Stores in svelte allows the management of state data without being linked to a specific component hierarchy
+    Stores in svelte allows the management of state data without being linked to a specific component hierarchy
 
-writable store can store a data then have this data updated later.
+    writable store can store a data then have this data updated later.
 
-```js
-// in a stores.js file
+    ```js
+    // in a stores.js file
 
-import { writable } from "svelte";
+    import { writable } from "svelte";
 
-export const myStore = writable(
-  "Initial value for the store is a string in this case"
-);
-```
+    export const myStore = writable(
+      "Initial value for the store is a string in this case"
+    );
+    ```
 
-Import in a svelte component interested to interact with the store
+    Import in a svelte component interested to interact with the store
 
-```html
-<script>
-  import { onDestroy } from "svelte";
-  import { myStore } from "store";
+    ```html
+    <script>
+      import { onDestroy } from "svelte";
+      import { myStore } from "store";
 
-  let message = "";
+      let message = "";
 
-  const unsubscribe = myStore.subscribe((value) => (message = value));
+      const unsubscribe = myStore.subscribe((value) => (message = value));
 
-  onDestroy(unsubscribe);
-</script>
-```
+      onDestroy(unsubscribe);
+    </script>
+    ```
 
-To retrieve the value of the store each time its content change, we call the subscribe function of the store. This function expects a listener function that uses the updated value of the store to do something with it.
+    To retrieve the value of the store each time its content change, we call the subscribe function of the store. This function expects a listener function that uses the updated value of the store to do something with it.
 
-In the above case, each new `value` will be used to update the component local variable `message`.
+    In the above case, each new `value` will be used to update the component local variable `message`.
 
-The `subscribe` function of a store returns a function to unsubscribe the listener function, i.e. it removes the listener function from the store which avoids memory leak in case the component is destroyed then recreated.
+    The `subscribe` function of a store returns a function to unsubscribe the listener function, i.e. it removes the listener function from the store which avoids memory leak in case the component is destroyed then recreated.
 
-This unsubscribe function is called by the svelte component lifecycle function `onDestroy`, which runs when the component is removed from the DOM.
+    This unsubscribe function is called by the svelte component lifecycle function `onDestroy`, which runs when the component is removed from the DOM.
 
 23. svelte : auto-subscribe store
 
-A lighter syntx to use a store involve the $store helper:
+    A lighter syntx to use a store involve the $store helper:
 
-```html
-<script>
-  import { alert } from '../stores.js'
-</script>
+    ```html
+    <script>
+      import { alert } from '../stores.js'
+    </script>
 
-{#if $alert}
-<div on:click={() => $alert = ''}>
-  <p>{ $alert }</p>
-</div>
-{/if}
+    {#if $alert}
+    <div on:click={() => $alert = ''}>
+      <p>{ $alert }</p>
+    </div>
+    {/if}
 
-```
+    ```
 
-The paragraph element displays the content of the store, and when clicked, the div element can update the store value to '';
+    The paragraph element displays the content of the store, and when clicked, the div element can update the store value to '';
 
-The subscription and unsubscription are handled by Svelte.
+    The subscription and unsubscription are handled by Svelte.
 
-24. ARIA `role` attribute
+24. svelte : create a custom writable store
 
-The html `role` attribute belongs to the set of a11y attributes to helps screen reader. In this case, it provides information about the nature of the element when the attribute is added.
+    A default svelte writable store is an object which has the following interface :
 
-As its value supersede the semantic provided by html5 element, it is better to use them on non-semantic elements such as div
+    - a `subscribe` function which :
 
-```html
-<div role="alert"></div>
-```
+      - takes a 'callback' function which uses the value in the store as a parameter and save it.
+      - returns a function to execute in order to remove the 'callback' function from the store.
 
-25. ARIA `aria-live` region
+    - a `set` function which takes a value to set as the new value of the store.
 
-When an element can change without user interaction, it is better to give it an `aria-live` attribute to tell screen reader to alert the user when that element changes.
+      The default implementation takes the input value and compare it to the current value of the store.
+      **In case** the new value is different from the current value :
 
-The `aria-live` attribute can have 3 levels of alert:
+      - the new value becomes the store value
+      - all subscriber 'callback' function are executed
 
-- off: screen reader stays silent when the element changes. All element are by default 'off' for its aria-live attribute.
-- polite: screen reader will speak of the change on the element, whenever it becomes idle
-- assertive: screen reader will stop anything it is currently reading to alert the user by immediately reading the changes on the element
+    - an `update` function which takes a function to change the current value of the store.
 
-Some aria `role` attribute value will automatically set the level of aria-live attribute. For example `role="alert"`, automatically set `aria-live` to `assertive`.
+      The default implementation :
+
+      - executes the input function with the current value of the store
+      - call the `set` function with the result of the previous execution to set a new value to the store and execute all subscriber call back function
+
+    Writing a custom store usually consists in writing a wrapper interface to the default svelte writable store :
+
+    - initializing a default svelte writable store
+    - returning an object having at least a `subscribe` function to add store listening `callback` function.
+    - other custom functions to change the value of the store.
+
+    Below, myCustomStore is a basic custom writable store that provides a way to set the initial value of the store.
+    No custom overrides or are added to it compared to a default svelte store.
+
+    ```js
+    // in a .js file
+    import { writable } from "svelte/store";
+
+    export const myCustomStore = (initialValue = 0) => {
+      const { subscribe, set, update } = writable(initialValue);
+
+      return {
+        subscribe,
+        set,
+        update,
+      };
+    };
+    ```
+
+    The next store implements 2 custom functions which are the only allowed ways to change the value of the store.
+
+    These functions use the default implementation of svelte writable store functions `set` and `update` to carry out their tasks.
+    Not exposing set and update methods prevents arbitrary modification of the store value.
+
+    ```js
+    // in a .js file
+    import { writable } from "svelte/store";
+
+    export const myCustomStore = (initialValue = 0) => {
+      const { subscribe, set, update } = writable(initialValue);
+
+      return {
+        subscribe,
+        addOne: () => update((n) => n + 1),
+        reset: () => set(0),
+      };
+    };
+    ```
+
+    In the tutorial, the custom store has specific behavior for :
+
+    - the setting of the starting value of the store with localStorage
+    - the set function as writing to localStorage is added before call the default writable set method
+
+    ```js
+    import { writable } from "svelte/store";
+
+    export const localStore = (key, initial) => {
+      // helper function to read write to localStorage
+      const toString = (value) => JSON.stringify(value, null, 2);
+      const toObj = JSON.parse;
+
+      // if the localStorage was never initialized, we create a new entry with the key and the initial value
+      if (localStorage(key) === null) {
+        localStorage.setItem(key, toString(initial));
+      }
+
+      // Whether the localStorage has been initialized before or the store has just been created, we read from it
+      // as our source for the svelte store starting value.
+      const saved = toObj(localStorage.getItem(key));
+
+      // We initialized the writable store with saved value.
+      const { subscribe, set, update } from writable(saved)
+
+      return {
+        subscribe,
+        // Whenever we want to set a new value to the store, it has to be saved first in localStorage for next restart of the app.
+        set: (value) => {
+          localStorage.setItem(key, toString(value));
+          return set(value)
+        },
+        update
+      }
+    };
+
+    ```
+
+25. ARIA `role` attribute
+
+    The html `role` attribute belongs to the set of a11y attributes to helps screen reader. In this case, it provides information about the nature of the element when the attribute is added.
+
+    As its value supersede the semantic provided by html5 element, it is better to use them on non-semantic elements such as div
+
+    ```html
+    <div role="alert"></div>
+    ```
+
+26. ARIA `aria-live` region
+
+    When an element can change without user interaction, it is better to give it an `aria-live` attribute to tell screen reader to alert the user when that element changes.
+
+    The `aria-live` attribute can have 3 levels of alert:
+
+    - off: screen reader stays silent when the element changes. All element are by default 'off' for its aria-live attribute.
+    - polite: screen reader will speak of the change on the element, whenever it becomes idle
+    - assertive: screen reader will stop anything it is currently reading to alert the user by immediately reading the changes on the element
+
+    Some aria `role` attribute value will automatically set the level of aria-live attribute. For example `role="alert"`, automatically set `aria-live` to `assertive`.
 
 ## Componentizing a Svelte App
 
